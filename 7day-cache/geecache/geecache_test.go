@@ -4,12 +4,13 @@ import (
 	"fmt"
 	"log"
 	"reflect"
+	"strconv"
 	"testing"
 )
 
 func TestGetter(t *testing.T) {
-	mu.Lock()
-	mu.RLock()
+	i, _ := strconv.Atoi(string("6"))
+	fmt.Println(i)
 	var f Getter = GetterFunc(func(key string) ([]byte, error) {
 		return []byte(key), nil
 	})

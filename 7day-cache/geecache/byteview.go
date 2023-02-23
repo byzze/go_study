@@ -2,7 +2,7 @@ package geecache
 
 // A ByteView holds an immutable view of bytes.
 type ByteView struct {
-	b []byte
+	b []byte // 只读，防止被外部修改
 }
 
 // Len returns the view's length

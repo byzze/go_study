@@ -9,6 +9,7 @@ import (
 func newTestRouter() *router {
 	r := newRouter()
 	r.addRoute("GET", "/", nil)
+	r.addRoute("GET", "/hello/cname", nil)
 	r.addRoute("GET", "/hello/:name", nil)
 	r.addRoute("GET", "/hello/b/c", nil)
 	r.addRoute("GET", "/hi/:name", nil)
@@ -27,20 +28,20 @@ func TestParsePattern(t *testing.T) {
 
 func TestGetRoute(t *testing.T) {
 	r := newTestRouter()
-	n, ps := r.getRoute("GET", "/hello/geektutu")
+	n, ps := r.getRoute("GET", "/hello/cname")
 
 	if n == nil {
 		t.Fatal("nil shouldn't be returned")
 	}
-
-	if n.pattern != "/hello/:name" {
-		t.Fatal("should match /hello/:name")
+	
+	if n.pattern != "/hello/cname" {
+		t.Fatal("should match /hello/cname")
 	}
 
-	if ps["name"] != "geektutu" {
+	if ps["name"] != "cname" {
 		t.Fatal("name should be equal to 'geektutu'")
 	}
-
+	fmt.Printf("matched path: %s, params['name']: %s\n", n.pattern, ps["name"])
 	n, ps = r.getRoute("GET", "/hello/geektutu1")
 
 	if n == nil {

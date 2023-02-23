@@ -4,12 +4,12 @@ import "container/list"
 
 // Cache is a LRU cache. It is not safe for concurrent access.
 type Cache struct {
-	maxBytes int64
-	nbytes   int64
-	LL       *list.List
-	cache    map[string]*list.Element
+	maxBytes int64 // 缓存字节最大值
+	nbytes   int64 // 缓存当前字节大小
+	LL       *list.List // 双端链表
+	cache    map[string]*list.Element // 使用map定位查找，提升查找效率
 	// optional and executed when an entry is purged.
-	OnEvicted func(key string, value Value)
+	OnEvicted func(key string, value Value) // 回调函数，缓存未命中时调用
 }
 
 type entry struct {
@@ -58,7 +58,7 @@ func (c *Cache) RemoveOldest() {
 // Add adds a value to the cache.
 func (c *Cache) Add(key string, value Value) {
 	if ele, ok := c.cache[key]; ok {
-		c.LL.MoveToFront(ele)
+		c.LL.MoveToFront(ele) // 移到队尾
 		kv := ele.Value.(*entry)
 		c.nbytes += int64(value.Len()) - int64(kv.value.Len())
 		kv.value = value
@@ -67,6 +67,7 @@ func (c *Cache) Add(key string, value Value) {
 		c.cache[key] = ele
 		c.nbytes += int64(len(key)) + int64(value.Len())
 	}
+	// 缓存字节大小超出限制，队首元素
 	for c.maxBytes != 0 && c.maxBytes < c.nbytes {
 		c.RemoveOldest()
 	}
